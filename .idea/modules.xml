@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/RetroBase_Example.iml" filepath="$PROJECT_DIR$/.idea/modules/RetroBase_Example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/RetroBase.iml" filepath="$PROJECT_DIR$/.idea/modules/RetroBase.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/retrobase/retrobase.iml" filepath="$PROJECT_DIR$/.idea/modules/retrobase/retrobase.iml" />
     </modules>
   </component>
