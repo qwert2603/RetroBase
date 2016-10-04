@@ -1,1 +1,2 @@
 com.qwert2603.retrobase.DBAnnotationProcessor
+com.qwert2603.retrobase.rx.DBMakeRxAnnotationProcessor

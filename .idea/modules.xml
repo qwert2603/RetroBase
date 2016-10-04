@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/RetroBase_Example.iml" filepath="$PROJECT_DIR$/.idea/modules/RetroBase_Example.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/retrobase/retrobase.iml" filepath="$PROJECT_DIR$/.idea/modules/retrobase/retrobase.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/retrobase_rx/retrobase_rx.iml" filepath="$PROJECT_DIR$/.idea/modules/retrobase_rx/retrobase_rx.iml" />
     </modules>
   </component>
 </project>

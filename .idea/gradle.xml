@@ -10,7 +10,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/retrobase" />
-            <option value="$PROJECT_DIR$/retrobase_rx" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
