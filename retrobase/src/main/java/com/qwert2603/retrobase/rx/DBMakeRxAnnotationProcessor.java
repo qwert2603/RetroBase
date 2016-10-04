@@ -42,37 +42,54 @@ public class DBMakeRxAnnotationProcessor extends AbstractProcessor {
 
         for (Element dbInterfaceRxClass : roundEnv.getElementsAnnotatedWith(DBInterfaceRx.class)) {
 
+            // create new type that contains methods-wrappers.
             TypeSpec.Builder newTypeBuilder = TypeSpec.classBuilder(dbInterfaceRxClass.getSimpleName() + GENERATED_FILENAME_SUFFIX)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
 
             TypeName dbInterfaceTypeName = TypeName.get(dbInterfaceRxClass.asType());
 
+            // field in new class that represents annotated class.
+            // we will call his methods in created methods-wrappers.
             FieldSpec mDB = FieldSpec.builder(dbInterfaceTypeName, "mDB")
                     .addModifiers(Modifier.PRIVATE)
                     .build();
 
+            // constructor for new class, to get object of annotated class.
             MethodSpec constructor = MethodSpec.constructorBuilder()
                     .addModifiers(Modifier.PUBLIC)
                     .addParameter(dbInterfaceTypeName, "db")
                     .addStatement("this.$N = db", mDB)
                     .build();
 
+            // add field and constructor.
             newTypeBuilder = newTypeBuilder
                     .addField(mDB)
                     .addMethod(constructor);
 
+            // there are troubles with generic return type in JavaPoet =(
+            // so we will replace return types later.
+            // we will do that just replacing CharSequences in the text of generated class =)
+            //
+            // we will replace return type "void" with rx.Observable<Object>.
+            // and we will replace return type "float" with rx.Observable<*classname*>,
+            // where *classname* is @DBMakeRx#modelClassName().
+            // so let's save *classname* for every method in this map =)
             Map<String, String> map = new HashMap<>();
 
+            // for every method, annotated with @DBQueryRx.
             for (Element enclosedElement : dbInterfaceRxClass.getEnclosedElements()) {
                 DBMakeRx dbMakeRx = enclosedElement.getAnnotation(DBMakeRx.class);
                 if (dbMakeRx == null) {
                     continue;
                 }
+
+                // creating method-wrapper.
                 MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(enclosedElement.getSimpleName().toString())
                         .addModifiers(Modifier.PUBLIC);
 
                 ExecutableElement executableElement = (ExecutableElement) enclosedElement;
 
+                // checking return type of annotated method.
                 TypeName returnTypeName = TypeName.get(executableElement.getReturnType());
 
                 boolean isVoid;
@@ -88,10 +105,12 @@ public class DBMakeRxAnnotationProcessor extends AbstractProcessor {
                             + returnTypeName + " found");
                 }
 
+                // body of method-wrapper.
                 methodBuilder = methodBuilder
                         .beginControlFlow("return $T.create(subscriber -> ", Observable.class)
                         .beginControlFlow("try");
 
+                // adding parameters to method-wrapper.
                 List<? extends VariableElement> parameters = executableElement.getParameters();
                 StringBuilder stringBuilder = new StringBuilder();
                 for (VariableElement parameter : parameters) {
@@ -101,7 +120,7 @@ public class DBMakeRxAnnotationProcessor extends AbstractProcessor {
                 }
 
                 if (stringBuilder.length() > 0) {
-                    stringBuilder.delete(stringBuilder.length()-2,stringBuilder.length());
+                    stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
                 }
                 String paramsToMethod = stringBuilder.toString();
 
@@ -130,6 +149,7 @@ public class DBMakeRxAnnotationProcessor extends AbstractProcessor {
 
             JavaFile javaFile = JavaFile.builder(GENERATED_PACKAGE, newTypeBuilder.build()).build();
 
+            // now we replace return types as was said before in comments.
             String newFile = javaFile.toString();
             newFile = newFile.replace("public void ", "public rx.Observable<Object> ");
             for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -137,6 +157,7 @@ public class DBMakeRxAnnotationProcessor extends AbstractProcessor {
                         "public rx.Observable<" + entry.getValue() + "> " + entry.getKey());
             }
 
+            // write generated class to file.
             try {
                 String filename = GENERATED_PACKAGE + "." + dbInterfaceRxClass.getSimpleName() + GENERATED_FILENAME_SUFFIX;
                 JavaFileObject sourceFile = processingEnv.getFiler().createSourceFile(filename);

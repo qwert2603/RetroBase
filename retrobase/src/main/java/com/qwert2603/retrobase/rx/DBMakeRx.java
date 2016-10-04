@@ -26,6 +26,8 @@ import rx.Observable;
  * Then it calls subscriber.onCompleted().
  *
  * If annotated method throws any exceptions, they will be caught and sent to <code>subscriber.onError(exception)</code>.
+ *
+ * Generated method-wrapper will have same params as annotated method.
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.METHOD)
