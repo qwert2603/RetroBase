@@ -1,1 +1,1 @@
-include ':app', ':retrobase', ':retrobase_rx'
+include ':retrobase', ':retrobase_rx'
