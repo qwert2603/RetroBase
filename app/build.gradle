@@ -41,16 +41,3 @@ dependencies {
     compile project(':retrobase')
     compile project(':retrobase_rx')
 }
-
-task processorTask(type: Exec) {
-    commandLine 'cp', '../retrobase/build/libs/retrobase.jar', 'libs/'
-}
-
-task processorTaskRx(type: Exec) {
-    commandLine 'cp', '../retrobase_rx/build/libs/retrobase_rx.jar', 'libs/'
-}
-
-processorTask.dependsOn(':retrobase:build')
-processorTaskRx.dependsOn(':retrobase_rx:build')
-preBuild.dependsOn(processorTask)
-preBuild.dependsOn(processorTaskRx)
