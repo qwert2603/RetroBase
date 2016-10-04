@@ -8,6 +8,7 @@ This project was inspired with [Retrofit](https://github.com/square/retrofit).
 And like Retrofit it allows You turn queries to DataBase to java-interface.
 
 Just use annotation @DBInterface for you interface and @DBQuery for method-query to DB.
+Methods may have parameters.
 
 Moreover, You can use @DBInterfaceRx and get results of query to DB as RxJava's Observables!!!
 For that add annotation @DBMakeRx to method and declare model-type for query.
