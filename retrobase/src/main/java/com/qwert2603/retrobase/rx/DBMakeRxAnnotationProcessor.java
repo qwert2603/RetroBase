@@ -127,21 +127,27 @@ public class DBMakeRxAnnotationProcessor extends AbstractProcessor {
                 if (isVoid) {
                     methodBuilder = methodBuilder
                             .addStatement("mDB.$L($L)", enclosedElement.getSimpleName(), paramsToMethod)
+                            .beginControlFlow("if (!subscriber.isUnsubscribed())")
                             .addStatement("subscriber.onNext(new $T())", Object.class)
-                            .addStatement("subscriber.onCompleted()");
+                            .endControlFlow();
                 } else {
                     methodBuilder = methodBuilder
                             .addStatement("$T resultSet = mDB.$L($L)", ResultSet.class, enclosedElement.getSimpleName(), paramsToMethod)
-                            .beginControlFlow("while (resultSet.next())")
+                            .beginControlFlow("while (resultSet.next() && !subscriber.isUnsubscribed())")
                             .addStatement("subscriber.onNext(new $L(resultSet))", dbMakeRx.modelClassName())
-                            .endControlFlow()
-                            .addStatement("subscriber.onCompleted()");
+                            .endControlFlow();
                 }
 
-                methodBuilder = methodBuilder.endControlFlow()
+                methodBuilder = methodBuilder
+                        .beginControlFlow("if (!subscriber.isUnsubscribed())")
+                        .addStatement("subscriber.onCompleted()")
+                        .endControlFlow()
+                        .endControlFlow() // end of try-block
                         .beginControlFlow("catch ($T e)", Exception.class)
+                        .beginControlFlow("if (!subscriber.isUnsubscribed())")
                         .addStatement("subscriber.onError(e)")
                         .endControlFlow()
+                        .endControlFlow() // end of "subscriber's void call(T t);"
                         .endControlFlow(")");
 
                 newTypeBuilder = newTypeBuilder.addMethod(methodBuilder.build());
