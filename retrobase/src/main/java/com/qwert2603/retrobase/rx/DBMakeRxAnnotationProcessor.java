@@ -34,7 +34,7 @@ import rx.Observable;
         "com.qwert2603.retrobase.rx.DBInterfaceRx"})
 public class DBMakeRxAnnotationProcessor extends AbstractProcessor {
 
-    private static final String GENERATED_PACKAGE = "com.qwert2603.retrobase_rx.generated";
+    private static final String GENERATED_PACKAGE = "com.qwert2603.retrobase.rx.generated";
     private static final String GENERATED_FILENAME_SUFFIX = "Rx";
 
     @Override

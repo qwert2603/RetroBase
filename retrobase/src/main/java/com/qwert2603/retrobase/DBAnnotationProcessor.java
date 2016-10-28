@@ -140,7 +140,7 @@ public class DBAnnotationProcessor extends AbstractProcessor {
                 statementFormat = "$N.setBlob($L, $N)";
             } else if (paramTypeName.equals(TypeName.get(java.sql.NClob.class))) {
                 statementFormat = "$N.setNClob($L, $N)";
-            } else if (paramTypeName.equals(TypeName.get(Object.class))) {
+            } else if (paramTypeName.equals(TypeName.get(java.lang.Object.class))) {
                 statementFormat = "$N.setObject($L, $N)";
             }
 
@@ -192,13 +192,22 @@ public class DBAnnotationProcessor extends AbstractProcessor {
                     .initializer("null")
                     .build();
 
-            // method for initializing of mConnection.
-            MethodSpec waitInit = MethodSpec.methodBuilder("initIfNotYet")
+            MethodSpec.Builder initIfNotYetBuilder = MethodSpec.methodBuilder("initIfNotYet")
                     .addModifiers(Modifier.PRIVATE)
                     .addException(SQLException.class)
-                    .beginControlFlow("if ($N == $L)", mConnection, null)
+                    .beginControlFlow("if ($N == $L || !$N.isValid(0))", mConnection, null, mConnection)
                     .addStatement("$N = $T.getConnection($S, $S, $S)",
-                            mConnection, DriverManager.class, dbInterface.url(), dbInterface.login(), dbInterface.password())
+                            mConnection, DriverManager.class, dbInterface.url(), dbInterface.login(), dbInterface.password());
+
+            // for every method in interface
+            for (Element enclosedElement : dbInterfaceClass.getEnclosedElements()) {
+                if (enclosedElement.getAnnotation(DBQuery.class) != null) {
+                    initIfNotYetBuilder = initIfNotYetBuilder.addStatement(enclosedElement.getSimpleName().toString() + PREPARED_STATEMENT_SUFFIX + " = null");
+                }
+            }
+
+            // method for initializing of mConnection.
+            MethodSpec waitInit = initIfNotYetBuilder
                     .endControlFlow()
                     .build();
 
