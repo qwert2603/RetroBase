@@ -14,7 +14,7 @@ Moreover, You can use @DBInterfaceRx and get results of query to DB as RxJava's 
 For that add annotation @DBMakeRx to method and declare model-type for query.
 Class need to have open constructor that get {@link java.sql.ResultSet}.
 
-Example:
+## Example:
 
 ```
 @DBInterface(url = SpendDB.URL, login = SpendDB.USER_NAME, password = SpendDB.PASSWORD)
@@ -44,6 +44,36 @@ public interface SpendDB {
 
 ##[Full working example is here](https://github.com/qwert2603/RetroBaseExample)
 
+## Returning ID
+
+If You need to execute INSERT query and get id of created record or get count of records those were updated with UPDATE query or get id of records those were deleted with DELETE query, You can add statement "returning id" at the end of Your SQL-query and get sought-for ids.
+
+```
+@DBMakeRx(modelClassName = "com.qwert2603.spenddemo.model.Id")
+@DBQuery("UPDATE spend_test SET kind=?, value=?, date=? WHERE id=? returning id")
+ResultSet updateRecord(String kind, int value, Date date, int id) throws SQLException;
+```
+
+As You can see, You can use DBMakeRx annotation and get Observable<*id*>. To do that You should create model-type that get Id from ResultSet and use this class as parameter modelClassName in annotation DBMakeRx. Model-type may be like this:
+
+```
+public class Id {
+    private int mId;
+
+    public Id(ResultSet resultSet) throws SQLException {
+        mId = resultSet.getInt(1);
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        mId = id;
+    }
+}
+```
+
 ##Download
 
 ```
@@ -57,6 +87,6 @@ allprojects {
 
 ```
 dependencies {
-	        compile 'com.github.qwert2603:RetroBase:1.0.3'
+	        compile 'com.github.qwert2603:RetroBase:1.0.4'
 }
 ```
