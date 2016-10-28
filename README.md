@@ -74,6 +74,12 @@ public class Id {
 }
 ```
 
+##Release 1.1
+
+- Now check <code>java.sql.Connection#isValid(0)</code>
+
+- Rx classes now generated into package com.qwert2603.retrobase.rx.generated; (before was package com.qwert2603.retrobase_rx.generated;)
+
 ##Download
 
 ```
@@ -87,6 +93,6 @@ allprojects {
 
 ```
 dependencies {
-	        compile 'com.github.qwert2603:RetroBase:1.0.4'
+	        compile 'com.github.qwert2603:RetroBase:1.1'
 }
 ```
