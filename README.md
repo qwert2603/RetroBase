@@ -7,12 +7,12 @@ RetroBase = Retrofit + DataBase. It turns queries to DataBase to java-interface!
 This project was inspired with [Retrofit](https://github.com/square/retrofit).
 And like Retrofit it allows You turn queries to DataBase into java-interface.
 
-Just use annotation @DBInterface for you interface and @DBQuery for method-query to DB.
+Just use annotation *@DBInterface* for you interface and *@DBQuery* for method-query to DB.
 Methods may have parameters.
 
-Moreover, You can use @DBInterfaceRx and get results of query to DB as RxJava's Observables!!!
-For that add annotation @DBMakeRx to method and declare model-type for query.
-Class need to have open constructor that get {@link java.sql.ResultSet}.
+Moreover, You can use *@DBInterfaceRx* and get results of query to DB as RxJava's Observables!!!
+For that add annotation *@DBMakeRx* to method and declare model-type for query.
+Class need to have open constructor that get *java.sql.ResultSet*.
 
 ## Example:
 
@@ -54,7 +54,7 @@ If You need to execute INSERT query and get id of created record or get count of
 ResultSet updateRecord(String kind, int value, Date date, int id) throws SQLException;
 ```
 
-As You can see, You can use DBMakeRx annotation and get Observable<*id*>. To do that You should create model-type that get Id from ResultSet and use this class as parameter modelClassName in annotation DBMakeRx. Model-type may be like this:
+As You can see, You can use *@DBMakeRx* annotation and get Observable<*id*>. To do that You should create model-type that get Id from *ResultSet* and use this class as parameter *modelClassName* in annotation *@DBMakeRx*. Model-type may be like this:
 
 ```
 public class Id {
@@ -83,8 +83,8 @@ public class Id {
 ##Release 1.2
 
 - Now using rxjava 2.x
-+ methods generated with @DBMakeRx return io.reactivex.Completable if annotated method returns void (INSERT, UPDATE, DELETE sql-queries)
-+ methods generated with @DBMakeRx return io.reactivex.Observable if annotated method returns java.sql.ResultSet (SELECT sql-query)
+- ...methods generated with *@DBMakeRx* return *io.reactivex.Completable* if annotated method returns *void* (INSERT, UPDATE, DELETE sql-queries)
+- ...methods generated with *@DBMakeRx* return *io.reactivex.Observable* if annotated method returns *java.sql.ResultSet* (SELECT sql-query). *io.reactivex.Observable* is created with *Observable#generate*.
 
 ##Download
 
