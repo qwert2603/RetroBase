@@ -5,29 +5,28 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import rx.Observable;
+import io.reactivex.Completable;
+import io.reactivex.Emitter;
+import io.reactivex.Observable;
 
 /**
  * Annotation to mark method for query to DataBase.
- *
+ * <p>
  * For every annotated method will be generated method-wrapper,
- * that call annotated method and return its result as {@link Observable ).
- *
+ * that call annotated method and return its result as {@link Observable)} or {@link Completable}.
+ * <p>
  * Method should return void or {@link java.sql.ResultSet}.
- *
- * If method returns void, method-wrapper will return {@link Observable<Object>}
- * and call <code>subscriber.onNext(new Object());</code> only once after query to DB executed.
- * Then it calls <code>subscriber.onCompleted();</code>.
- *
- * If method returns {@link java.sql.ResultSet}, method-wrapper will return Observable<*classname*>,
+ * <p>
+ * If annotated method returns void, method-wrapper will return {@link Completable},
+ * that completes after successful query execution.
+ * <p>
+ * If annotated method returns {@link java.sql.ResultSet}, method-wrapper will return Observable<*classname*>,
  * where *classname* is defined with {@link DBMakeRx#modelClassName()}.
  * That's why *classname* must have open constructor, that get {@link java.sql.ResultSet}.
- * Method-wrapper call subscriber.onNext(new *classname*(resultSet)) for every record from {@link java.sql.ResultSet}.
- * Then it calls subscriber.onCompleted().
- *
- * If annotated method throws any exceptions, they will be caught and sent to <code>subscriber.onError(exception)</code>.
- *
- * Generated method-wrapper will have same params as annotated method.
+ * Method-wrapper calls <code>Emitter#onNext(new *classname*(resultSet))</code> for every record from {@link java.sql.ResultSet}.
+ * Then it calls {@link Emitter#onComplete()}.
+ * <p>
+ * If annotated method throws any exceptions, they will be caught and sent to {@link Emitter#onError(Throwable)}.
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.METHOD)

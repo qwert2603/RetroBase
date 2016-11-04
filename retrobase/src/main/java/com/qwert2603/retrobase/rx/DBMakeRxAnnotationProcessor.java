@@ -26,7 +26,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.tools.JavaFileObject;
 
-import rx.Observable;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedAnnotationTypes(value = {
@@ -70,8 +71,7 @@ public class DBMakeRxAnnotationProcessor extends AbstractProcessor {
             // so we will replace return types later.
             // we will do that just replacing CharSequences in the text of generated class =)
             //
-            // we will replace return type "void" with rx.Observable<Object>.
-            // and we will replace return type "float" with rx.Observable<*classname*>,
+            // we will replace return type "float" with io.reactivex.Observable<*classname*>,
             // where *classname* is @DBMakeRx#modelClassName().
             // so let's save *classname* for every method in this map =)
             Map<String, String> map = new HashMap<>();
@@ -94,7 +94,7 @@ public class DBMakeRxAnnotationProcessor extends AbstractProcessor {
 
                 boolean isVoid;
                 if (returnTypeName.equals(TypeName.VOID)) {
-                    methodBuilder = methodBuilder.returns(void.class);
+                    methodBuilder = methodBuilder.returns(Completable.class);
                     isVoid = true;
                 } else if (returnTypeName.equals(TypeName.get(ResultSet.class))) {
                     methodBuilder = methodBuilder.returns(float.class);
@@ -104,11 +104,6 @@ public class DBMakeRxAnnotationProcessor extends AbstractProcessor {
                     throw new RuntimeException("method should return void or java.sql.ResultSet, but "
                             + returnTypeName + " found");
                 }
-
-                // body of method-wrapper.
-                methodBuilder = methodBuilder
-                        .beginControlFlow("return $T.create(subscriber -> ", Observable.class)
-                        .beginControlFlow("try");
 
                 // adding parameters to method-wrapper.
                 List<? extends VariableElement> parameters = executableElement.getParameters();
@@ -124,31 +119,21 @@ public class DBMakeRxAnnotationProcessor extends AbstractProcessor {
                 }
                 String paramsToMethod = stringBuilder.toString();
 
+                // body of method-wrapper.
                 if (isVoid) {
                     methodBuilder = methodBuilder
-                            .addStatement("mDB.$L($L)", enclosedElement.getSimpleName(), paramsToMethod)
-                            .beginControlFlow("if (!subscriber.isUnsubscribed())")
-                            .addStatement("subscriber.onNext(new $T())", Object.class)
-                            .endControlFlow();
+                            .addStatement("return $T.fromAction(() -> $N.deleteRecord(id))", Completable.class, mDB);
                 } else {
                     methodBuilder = methodBuilder
-                            .addStatement("$T resultSet = mDB.$L($L)", ResultSet.class, enclosedElement.getSimpleName(), paramsToMethod)
-                            .beginControlFlow("while (resultSet.next() && !subscriber.isUnsubscribed())")
-                            .addStatement("subscriber.onNext(new $L(resultSet))", dbMakeRx.modelClassName())
-                            .endControlFlow();
+                            .beginControlFlow("return $T.generate(() -> $N.$L($L), (resultSet, objectEmitter) ->", Observable.class, mDB, enclosedElement.getSimpleName(), paramsToMethod)
+                            .beginControlFlow("if (resultSet.next())")
+                            .addStatement("objectEmitter.onNext(new $L(resultSet))", dbMakeRx.modelClassName())
+                            .endControlFlow()
+                            .beginControlFlow("else")
+                            .addStatement("objectEmitter.onComplete()")
+                            .endControlFlow()
+                            .endControlFlow(", $T::close)", ResultSet.class);
                 }
-
-                methodBuilder = methodBuilder
-                        .beginControlFlow("if (!subscriber.isUnsubscribed())")
-                        .addStatement("subscriber.onCompleted()")
-                        .endControlFlow()
-                        .endControlFlow() // end of try-block
-                        .beginControlFlow("catch ($T e)", Exception.class)
-                        .beginControlFlow("if (!subscriber.isUnsubscribed())")
-                        .addStatement("subscriber.onError(e)")
-                        .endControlFlow()
-                        .endControlFlow() // end of "subscriber's void call(T t);"
-                        .endControlFlow(")");
 
                 newTypeBuilder = newTypeBuilder.addMethod(methodBuilder.build());
             }
@@ -157,10 +142,9 @@ public class DBMakeRxAnnotationProcessor extends AbstractProcessor {
 
             // now we replace return types as was said before in comments.
             String newFile = javaFile.toString();
-            newFile = newFile.replace("public void ", "public rx.Observable<Object> ");
             for (Map.Entry<String, String> entry : map.entrySet()) {
                 newFile = newFile.replace("public float " + entry.getKey(),
-                        "public rx.Observable<" + entry.getValue() + "> " + entry.getKey());
+                        "public io.reactivex.Observable<" + entry.getValue() + "> " + entry.getKey());
             }
 
             // write generated class to file.

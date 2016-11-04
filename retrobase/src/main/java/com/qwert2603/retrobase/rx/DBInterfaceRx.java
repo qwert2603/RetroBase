@@ -8,10 +8,10 @@ import java.lang.annotation.Target;
 /**
  * Annotation for class or interface, that contains methods-queries to DataBase.
  * Methods-queries to DB should be marked with {@link DBMakeRx}.
- *
+ * <p>
  * For every class marked with this annotations will be generated class with open constructor,
  * that gets object of annotated class and calls his methods.
- *
+ * <p>
  * Name of generated class will be *classname* + "Rx".
  */
 @Retention(RetentionPolicy.SOURCE)

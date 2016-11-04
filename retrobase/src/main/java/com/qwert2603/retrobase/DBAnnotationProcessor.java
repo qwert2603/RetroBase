@@ -56,7 +56,7 @@ public class DBAnnotationProcessor extends AbstractProcessor {
                 .initializer("null")
                 .build();
 
-       List<? extends TypeMirror> thrownTypes = executableElement.getThrownTypes();
+        List<? extends TypeMirror> thrownTypes = executableElement.getThrownTypes();
 
         // check throws declaration.
         boolean catchExceptions;
