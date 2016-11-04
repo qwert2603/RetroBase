@@ -99,6 +99,6 @@ allprojects {
 
 ```
 dependencies {
-	        compile 'com.github.qwert2603:RetroBase:1.1'
+	        compile 'com.github.qwert2603:RetroBase:1.2'
 }
 ```
