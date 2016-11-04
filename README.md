@@ -80,6 +80,12 @@ public class Id {
 
 - Rx classes now generated into package com.qwert2603.retrobase.rx.generated; (before was package com.qwert2603.retrobase_rx.generated;)
 
+##Release 1.2
+
+- Now using rxjava 2.x
++ methods generated with @DBMakeRx return io.reactivex.Completable if annotated method returns void (INSERT, UPDATE, DELETE sql-queries)
++ methods generated with @DBMakeRx return io.reactivex.Observable if annotated method returns java.sql.ResultSet (SELECT sql-query)
+
 ##Download
 
 ```
