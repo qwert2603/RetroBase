@@ -36,9 +36,9 @@ public interface SpendDB {
     @DBQuery("DELETE FROM spend_test WHERE id = ?")
     void deleteRecord(int id) throws SQLException;
 
-    @DBMakeRx
-    @DBQuery("INSERT INTO spend_test (kind, value, date) VALUES (?, ?, ?)")
-    void insertRecord(String kind, int value, Date date) throws SQLException;
+    @DBMakeRx(modelClassName = "com.qwert2603.retrobase_example.Id")
+    @DBQuery("INSERT INTO test_spend (kind, value, date) VALUES (?, ?, ?) returning id")
+    ResultSet insertRecord(String kind, int value, Date date) throws SQLException;
 }
 ```
 
