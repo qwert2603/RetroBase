@@ -3,8 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/RetroBase.iml" filepath="$PROJECT_DIR$/.idea/modules/RetroBase.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/RetroBase.iml" filepath="$PROJECT_DIR$/.idea/modules/RetroBase.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/retrobase/retrobase.iml" filepath="$PROJECT_DIR$/.idea/modules/retrobase/retrobase.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/retrobase/retrobase.iml" filepath="$PROJECT_DIR$/.idea/modules/retrobase/retrobase.iml" />
     </modules>
   </component>

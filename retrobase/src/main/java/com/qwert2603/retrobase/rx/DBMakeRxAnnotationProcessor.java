@@ -122,7 +122,7 @@ public class DBMakeRxAnnotationProcessor extends AbstractProcessor {
                 // body of method-wrapper.
                 if (isVoid) {
                     methodBuilder = methodBuilder
-                            .addStatement("return $T.fromAction(() -> $N.deleteRecord(id))", Completable.class, mDB);
+                            .addStatement("return $T.fromAction(() -> $N.$L($L))", Completable.class, mDB, enclosedElement.getSimpleName(), paramsToMethod);
                 } else {
                     methodBuilder = methodBuilder
                             .beginControlFlow("return $T.generate(() -> $N.$L($L), (resultSet, objectEmitter) ->", Observable.class, mDB, enclosedElement.getSimpleName(), paramsToMethod)
