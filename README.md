@@ -14,6 +14,8 @@ Moreover, You can use *@DBInterfaceRx* and get results of query to DB as RxJava'
 For that add annotation *@DBMakeRx* to method and declare model-type for query.
 Class need to have open constructor that get *java.sql.ResultSet*.
 
+## [Article with description of realization](https://medium.com/@qwert2603/retrobase-like-retrofit-but-for-database-ec32abfd4793#.zhnrcvxfa)
+
 ## Example:
 
 ```
