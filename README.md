@@ -4,6 +4,8 @@ RetroBase = Retrofit + DataBase. It turns queries to DataBase to java-interface!
 
 [![](https://www.jitpack.io/v/qwert2603/RetroBase.svg)](https://www.jitpack.io/#qwert2603/RetroBase)
 
+[![ghit.me](https://ghit.me/badge.svg?repo=qwert2603/RetroBase)](https://ghit.me/repo/qwert2603/RetroBase)
+
 This project was inspired with [Retrofit](https://github.com/square/retrofit).
 And like Retrofit it allows You turn queries to DataBase into java-interface.
 
