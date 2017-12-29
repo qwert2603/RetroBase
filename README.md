@@ -44,7 +44,7 @@ public interface SpendDB {
 }
 ```
 
-##[Full working example is here](https://github.com/qwert2603/RetroBaseExample)
+## [Full working example is here](https://github.com/qwert2603/RetroBaseExample)
 
 ## Returning ID
 
@@ -76,19 +76,19 @@ public class Id {
 }
 ```
 
-##Release 1.1
+## Release 1.1
 
 - Now check <code>java.sql.Connection#isValid(0)</code>
 
 - Rx classes now generated into package com.qwert2603.retrobase.rx.generated; (before was package com.qwert2603.retrobase_rx.generated;)
 
-##Release 1.2
+## Release 1.2
 
 - Now using rxjava 2.x
 - ...methods generated with *@DBMakeRx* return *io.reactivex.Completable* if annotated method returns *void* (INSERT, UPDATE, DELETE sql-queries)
 - ...methods generated with *@DBMakeRx* return *io.reactivex.Observable* if annotated method returns *java.sql.ResultSet* (SELECT sql-query). *io.reactivex.Observable* is created with *Observable#generate*.
 
-##Download
+## Download
 
 ```
 allprojects {
